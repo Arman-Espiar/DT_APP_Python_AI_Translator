@@ -202,8 +202,11 @@ def main():
 
     os.system(command="cls" if os.name == "nt" else "clear")
 
-    input_text_file_path: str = "./temp/pg36.txt"
-    output_text_file_path: str = "./temp/pg36_translated.txt"
+    # input_text_file_path: str = "./temp/pg36.txt"
+    # output_text_file_path: str = "./temp/pg36_translated.txt"
+
+    input_text_file_path: str = "./temp/pg2097.txt"
+    output_text_file_path: str = "./temp/pg2097_translated.txt"
 
     text_content: str = load_text_file(
         file_path=input_text_file_path,

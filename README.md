@@ -21,9 +21,19 @@
     - https://github.com/Textualize/rich
     - https://rich.readthedocs.io/en/latest
 
+- Package: 'pypdf'
+    - https://pypi.org/project/pypdf
+    - https://github.com/py-pdf/pypdf
+    - https://pypdf.readthedocs.io/en/latest
+
 - Package: 'openai'
     - https://pypi.org/project/openai
     - https://github.com/openai/openai-python
+
+- Package: 'cryptography'
+    - https://pypi.org/project/cryptography
+    - https://github.com/pyca/cryptography
+    - https://cryptography.io/en/latest
 
 - Package: 'dotenv-python'
     - https://pypi.org/project/dotenv-python
@@ -60,7 +70,15 @@ python -m pip install -U rich
 ```
 
 ```bash
+python -m pip install -U pypdf
+```
+
+```bash
 python -m pip install -U openai
+```
+
+```bash
+python -m pip install -U cryptography
 ```
 
 ```shell

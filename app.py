@@ -1,22 +1,25 @@
 import os
 import time
+import pathlib
 from rich import print
 
 # NEW
 import dt_openai as openai
 import dt_llm_utility as utility
 
+DELAY_IN_SECONDS: float = 5
+
 # NEW
 TEMPERATURE: float = 0.2
-DELAY_IN_SECONDS: float = 5
 BASE_URL: str = "https://api.avalai.ir/v1".strip().lower()
+
+# NEW
+# MODEL_NAME: str = "google/gemma-3-27b-it:free".strip().lower()
 
 # NEW
 # MODEL_NAME: str = "gpt-oss-120b".strip().lower()
 MODEL_NAME: str = "gemini-2.5-flash-lite".strip().lower()
 # MODEL_NAME: str = "gemini-2.5-flash".strip().lower()  # خیلی طول می‌کشد
-# MODEL_NAME: str = "google/gemma-3-27b-it:free".strip().lower()
-
 # MODEL_NAME: str = "gemma-3-27b-it".strip().lower()  # Error!
 # MODEL_NAME: str = "cf.gemma-sea-lion-v4-27b-it".strip().lower()  # Error!
 
@@ -46,11 +49,17 @@ def load_text_file(file_path: str) -> str:
     """Load and return the content of a text file."""
 
     if not os.path.exists(path=file_path):
-        print(f"[-] The file {file_path} does not exist.")
+        print(f"[-] The file '{file_path}' does not exist!\n")
         exit()
 
     if not os.path.isfile(path=file_path):
-        print(f"[-] The file {file_path} does not exist.")
+        print(f"[-] The file '{file_path}' does not exist!\n")
+        exit()
+
+    source_file_extension: str = pathlib.Path(file_path).suffix.lower()
+
+    if source_file_extension != ".txt":
+        print(f"[-] The file '{file_path}' is not 'txt' file!\n")
         exit()
 
     with open(file=file_path, mode="rt", encoding="utf-8") as file:
@@ -64,11 +73,12 @@ def fix_text_content(text: str) -> str:
     fixed_text: str = text
 
     fixed_text = fixed_text.strip()
-
-    while "\n\n\n\n" in fixed_text:
-        fixed_text = fixed_text.replace("\n\n\n\n", "\n\n")
-
     fixed_text = fixed_text.replace("\r", "")
+
+    # آقای علیرضا ولدخانی
+    while "\n\n\n" in fixed_text:
+        fixed_text = fixed_text.replace("\n\n\n", "\n\n")
+
     fixed_text = fixed_text.replace("\n\n", "[NEW_PARAGRAPH]")
     fixed_text = fixed_text.replace("\n", " ")
     fixed_text = fixed_text.replace("[NEW_PARAGRAPH]", "\n")
@@ -136,7 +146,7 @@ def fix_translated_paragraph(paragraph: str | None) -> str:
     while "  " in fixed_paragraph:
         fixed_paragraph = fixed_paragraph.replace("  ", " ")
 
-    fixed_paragraph = paragraph.strip()
+    fixed_paragraph = fixed_paragraph.strip()
 
     return fixed_paragraph
 
@@ -148,9 +158,11 @@ def translate_paragraph(paragraph: str) -> str:
     print(f"[{paragraph}]")
     print("-" * 50)
 
+    # NEW
     messages: list[dict] = []
     messages.append(SYSTEM_MESSAGE)
 
+    # NEW
     user_message: dict = {
         utility.KEY_NAME_ROLE: utility.ROLE_USER,
         utility.KEY_NAME_CONTENT: paragraph,
@@ -159,6 +171,7 @@ def translate_paragraph(paragraph: str) -> str:
 
     start_time: float = time.time()
 
+    # NEW
     translated_paragraph, prompt_tokens, completion_tokens = openai.chat(
         messages=messages,
         base_url=BASE_URL,
@@ -184,7 +197,7 @@ def translate_paragraph(paragraph: str) -> str:
     print()
 
     if not translated_paragraph:
-        raise ValueError("'translated_paragraph' is None!")
+        raise ValueError("'translated_paragraph' is None or empty!")
 
     return translated_paragraph
 
@@ -202,11 +215,11 @@ def main():
 
     os.system(command="cls" if os.name == "nt" else "clear")
 
-    # input_text_file_path: str = "./temp/pg36.txt"
-    # output_text_file_path: str = "./temp/pg36_translated.txt"
+    # input_text_file_path: str = "./data/pg36.txt"
+    # output_text_file_path: str = "./data/pg36_translated.txt"
 
-    input_text_file_path: str = "./temp/pg2097.txt"
-    output_text_file_path: str = "./temp/pg2097_translated.txt"
+    input_text_file_path: str = "./data/pg2097.txt"
+    output_text_file_path: str = "./data/pg2097_translated.txt"
 
     text_content: str = load_text_file(
         file_path=input_text_file_path,
@@ -261,7 +274,7 @@ if __name__ == "__main__":
 
     except Exception as e:
         print()
-        print(f"[-] Error: {e}")
+        print(f"[-] {e}")
 
     print()
     print("." * 50)

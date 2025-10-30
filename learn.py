@@ -1,5 +1,6 @@
 import os
 import time
+import pathlib
 from rich import print
 
 DELAY_IN_SECONDS: float = 2
@@ -9,11 +10,17 @@ def load_text_file(file_path: str) -> str:
     """Load and return the content of a text file."""
 
     if not os.path.exists(path=file_path):
-        print(f"[-] The file {file_path} does not exist.")
+        print(f"[-] The file '{file_path}' does not exist!\n")
         exit()
 
     if not os.path.isfile(path=file_path):
-        print(f"[-] The file {file_path} does not exist.")
+        print(f"[-] The file '{file_path}' does not exist!\n")
+        exit()
+
+    source_file_extension: str = pathlib.Path(file_path).suffix.lower()
+
+    if source_file_extension != ".txt":
+        print(f"[-] The file '{file_path}' is not 'txt' file!\n")
         exit()
 
     with open(file=file_path, mode="rt", encoding="utf-8") as file:
@@ -27,11 +34,15 @@ def fix_text_content(text: str) -> str:
     fixed_text: str = text
 
     fixed_text = fixed_text.strip()
-
-    while "\n\n\n\n" in fixed_text:
-        fixed_text = fixed_text.replace("\n\n\n\n", "\n\n")
-
     fixed_text = fixed_text.replace("\r", "")
+
+    # while "\n\n\n\n" in fixed_text:
+    #     fixed_text = fixed_text.replace("\n\n\n\n", "\n\n")
+
+    # آقای علیرضا ولدخانی
+    while "\n\n\n" in fixed_text:
+        fixed_text = fixed_text.replace("\n\n\n", "\n\n")
+
     fixed_text = fixed_text.replace("\n\n", "[NEW_PARAGRAPH]")
     fixed_text = fixed_text.replace("\n", " ")
     fixed_text = fixed_text.replace("[NEW_PARAGRAPH]", "\n")
@@ -100,7 +111,7 @@ def fix_translated_paragraph(paragraph: str | None) -> str:
     while "  " in fixed_paragraph:
         fixed_paragraph = fixed_paragraph.replace("  ", " ")
 
-    fixed_paragraph = paragraph.strip()
+    fixed_paragraph = fixed_paragraph.strip()
 
     return fixed_paragraph
 
@@ -138,7 +149,7 @@ def translate_paragraph(paragraph: str) -> str:
     print()
 
     if not translated_paragraph:
-        raise ValueError("'translated_paragraph' is None!")
+        raise ValueError("'translated_paragraph' is None or empty!")
 
     return translated_paragraph
 
@@ -200,7 +211,10 @@ def main():
     # for index, paragraph in enumerate(paragraphs):
     #     print("=" * 50)
     #     print(f"({index + 1})")
-    #     translated_paragraph: str = translate_paragraph(paragraph=paragraph)
+
+    #     translated_paragraph: str = translate_paragraph(
+    #         paragraph=paragraph,
+    #     )
 
     # exit()
     # **************************************************
@@ -235,7 +249,7 @@ def main():
 
 if __name__ == "__main__":
     # عددی که در آخرین مرحله و با
-    # بروز خطا نمایش داده شده است
+    # ایجاد خطا نمایش داده شده است
     success_index: int = -1
     # success_index: int = ?????
 
@@ -250,7 +264,7 @@ if __name__ == "__main__":
 
     except Exception as e:
         print()
-        print(f"[-] Error: {e}")
+        print(f"[-] {e}")
 
     print()
     print("." * 50)

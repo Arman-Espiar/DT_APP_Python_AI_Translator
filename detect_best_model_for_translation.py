@@ -59,7 +59,7 @@ MODELS: list[str] = [
 
 
 def main() -> None:
-    """Main function."""
+    """Main of program"""
 
     os.system(command="cls" if os.name == "nt" else "clear")
 
@@ -109,5 +109,4 @@ if __name__ == "__main__":
         pass
 
     except Exception as error:
-        # Log 'error'
-        print(f"[-] {error}")
+        print(f"[-] {error}\n")
